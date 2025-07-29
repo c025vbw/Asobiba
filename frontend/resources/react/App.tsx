@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { API_URL } from "./constants/apiConstants.ts";
+import Chat from "./components/Chat.tsx";
 
 function App() {
   const apiUrl = API_URL;
@@ -15,8 +16,11 @@ function App() {
 
   return (
     <>
-      <h1>画面出力テスト</h1>
-      <p>{message}</p>
+      <h2>
+        APIとの疎通：
+        {message}
+      </h2>
+      <Chat />
     </>
   );
 }
