@@ -4,31 +4,53 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - name: リポジトリのコードをチェックアウト
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Node.js をセットアップ
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: 依存関係をインストール
-        run: npm install
-        working-directory: frontend
-
-      - name: リンターを実行
-        run: npm run lint
-        working-directory: frontend
+        run: npm ci --no-audit --no-fund
 
       - name: テストを実行
         run: npm test
+
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
         working-directory: frontend
+
+    steps:
+      - name: リポジトリのコードをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 依存関係をインストール
+        run: npm ci --no-audit --no-fund
+
+      - name: リンターを実行
+        run: npm run lint
