@@ -1,0 +1,31 @@
+name: Front-CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリのコードをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 依存関係をインストール
+        run: npm install
+
+      - name: リンターを実行
+        run: npm run lint
+
+      - name: テストを実行
+        run: npm test
