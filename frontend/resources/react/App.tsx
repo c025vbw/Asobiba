@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { API_URL } from "./constants/apiConstants.ts";
-import Chat from "./components/Chat.tsx";
+import { API_BASE_URL } from "./constants/apiConstants.ts";
+import Chat from "./features/chat/Chat.tsx";
 
 function App() {
-  const apiUrl = API_URL;
+  const apiBaseUrl = API_BASE_URL;
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch(apiUrl)
+    fetch(apiBaseUrl)
       .then((res) => res.json())
       .then((data) => {
         setMessage(data.message);
       });
-  }, [apiUrl]);
+  }, [apiBaseUrl]);
 
   return (
     <>
