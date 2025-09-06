@@ -14,7 +14,8 @@
     "@tailwindcss/vite": "^4.1.12",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.12"
+    "tailwindcss": "^4.1.12",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.0",
