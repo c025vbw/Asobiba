@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { API_BASE_URL } from "./constants/apiConstants.ts";
+import Header from "./components/Header.tsx";
 import Chat from "./features/chat/Chat.tsx";
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <main className="w-full h-screen">
+      <Header title="AIチャット" subtitle="何でもお聞かせください" />
+      <main className="w-full h-[calc(100vh-73px)]">
         <Chat />
       </main>
     </div>
