@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { API_BASE_URL } from "./constants/apiConstants.ts";
+import Header from "./components/Header.tsx";
 import Chat from "./features/chat/Chat.tsx";
 
 function App() {
   const apiBaseUrl = API_BASE_URL;
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetch(apiBaseUrl)
       .then((res) => res.json())
       .then((data) => {
-        setMessage(data.message);
+        console.log(data);
       });
   }, [apiBaseUrl]);
 
   return (
-    <>
-      <h2>
-        APIとの疎通：
-        {message}
-      </h2>
-      <Chat />
-    </>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header title="AIチャット" subtitle="何でもお聞かせください" />
+      <main className="w-full h-[calc(100vh-73px)]">
+        <Chat />
+      </main>
+    </div>
   );
 }
 
