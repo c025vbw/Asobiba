@@ -2,13 +2,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ChatInput from "../../features/chat/ChatInput";
 
-describe("ChatInput Component Unit Tests", () => {
-  const mockOnSendMessage = jest.fn();
+const mockOnSendMessage = jest.fn();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
+describe("ChatInput Component 初期表示テスト", () => {
   test("初期状態で正しくレンダリングされる", () => {
     render(<ChatInput onSendMessage={mockOnSendMessage} />);
 
@@ -24,6 +24,26 @@ describe("ChatInput Component Unit Tests", () => {
     expect(sendButton).toBeDisabled();
   });
 
+  test("プレースホルダーテキストが正しく表示される", () => {
+    render(<ChatInput onSendMessage={mockOnSendMessage} />);
+
+    const textarea =
+      screen.getByPlaceholderText("メッセージを入力してください...");
+    expect(textarea).toHaveAttribute(
+      "placeholder",
+      "メッセージを入力してください...",
+    );
+  });
+
+  test("aria-labelが正しく設定される", () => {
+    render(<ChatInput onSendMessage={mockOnSendMessage} />);
+
+    const sendButton = screen.getByLabelText("メッセージを送信");
+    expect(sendButton).toHaveAttribute("aria-label", "メッセージを送信");
+  });
+});
+
+describe("ChatInput Component 操作テスト", () => {
   test("テキスト入力時に状態が正しく更新される", () => {
     render(<ChatInput onSendMessage={mockOnSendMessage} />);
 
@@ -156,23 +176,5 @@ describe("ChatInput Component Unit Tests", () => {
     fireEvent.change(textarea, { target: { value: "テスト" } });
     expect(sendButton).not.toBeDisabled();
     expect(sendButton).toHaveClass("bg-blue-500");
-  });
-
-  test("プレースホルダーテキストが正しく表示される", () => {
-    render(<ChatInput onSendMessage={mockOnSendMessage} />);
-
-    const textarea =
-      screen.getByPlaceholderText("メッセージを入力してください...");
-    expect(textarea).toHaveAttribute(
-      "placeholder",
-      "メッセージを入力してください...",
-    );
-  });
-
-  test("aria-labelが正しく設定される", () => {
-    render(<ChatInput onSendMessage={mockOnSendMessage} />);
-
-    const sendButton = screen.getByLabelText("メッセージを送信");
-    expect(sendButton).toHaveAttribute("aria-label", "メッセージを送信");
   });
 });
