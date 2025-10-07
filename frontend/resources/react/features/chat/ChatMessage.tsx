@@ -1,4 +1,4 @@
-import { Message } from "../../types/types";
+import type { Message } from "../../types/types";
 
 interface ChatMessageProps {
   message: Message;
@@ -11,6 +11,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
     <div
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}
       data-testid={`message-${message.id}`}
+      data-message-role={message.role}
     >
       <div
         className={`max-w-[80%] flex ${isUser ? "flex-row-reverse" : "flex-row"} items-start space-x-3 ${isUser ? "space-x-reverse" : ""}`}

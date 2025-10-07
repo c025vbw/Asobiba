@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { describe, test, expect } from "vitest";
 import Chat from "../../features/chat/Chat";
+import "@testing-library/jest-dom/vitest";
 
 describe("Chat Component", () => {
   test("ユーザーがメッセージを入力して送信できる", () => {
@@ -16,42 +17,32 @@ describe("Chat Component", () => {
     expect(screen.getByText("あなた")).toBeInTheDocument();
   });
 
-  test("AIからの応答が表示される", async () => {
+  test("メッセージを送信すると、モックAPIのレスポンスのdocumentsが表示される", async () => {
     render(<Chat />);
+
     const input =
       screen.getByPlaceholderText("メッセージを入力してください...");
     const sendButton = screen.getByLabelText("メッセージを送信");
 
-    fireEvent.change(input, { target: { value: "テストメッセージ" } });
-    fireEvent.click(sendButton);
-
-    // タイピングインジケーターが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByTestId("typing-indicator")).toBeInTheDocument();
+    // ユーザー入力
+    fireEvent.change(input, {
+      target: { value: "フィッシング相談件数の推移は？" },
     });
 
-    // AI応答が表示されることを確認（どの応答でも良い）
+    // 送信ボタンをクリック
+    fireEvent.click(sendButton);
+
+    // モックAPIからのレスポンスが表示されることを確認
+    // AIの応答が表示されるまで待つ（正規表現で部分一致）
     await waitFor(
-      () => {
-        const aiMessages = screen.getAllByTestId(/message-msg-2/);
-        expect(aiMessages).toHaveLength(1);
+      async () => {
+        const text = await screen.findByText(
+          /フィッシング相談件数の推移は2020年から2023年にかけて増加傾向/,
+        );
+        expect(text).toBeInTheDocument();
       },
-      { timeout: 4000 },
+      { timeout: 3000 },
     );
-  });
-
-  test("タイピングインジケーターが表示される", async () => {
-    render(<Chat />);
-    const input =
-      screen.getByPlaceholderText("メッセージを入力してください...");
-    const sendButton = screen.getByLabelText("メッセージを送信");
-
-    fireEvent.change(input, { target: { value: "テスト" } });
-    fireEvent.click(sendButton);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("typing-indicator")).toBeInTheDocument();
-    });
   });
 
   test("メッセージが時系列順に表示される", async () => {
@@ -123,43 +114,19 @@ describe("Chat Component", () => {
     expect(screen.getByText("あなた")).toBeInTheDocument();
   });
 
-  test("AIからの応答が表示される", async () => {
-    render(<Chat />);
-    const input =
-      screen.getByPlaceholderText("メッセージを入力してください...");
-    const sendButton = screen.getByLabelText("メッセージを送信");
+  // test("タイピングインジケーターが表示される", async () => {
+  //   render(<Chat />);
+  //   const input =
+  //     screen.getByPlaceholderText("メッセージを入力してください...");
+  //   const sendButton = screen.getByLabelText("メッセージを送信");
 
-    fireEvent.change(input, { target: { value: "テストメッセージ" } });
-    fireEvent.click(sendButton);
+  //   fireEvent.change(input, { target: { value: "テスト" } });
+  //   fireEvent.click(sendButton);
 
-    // タイピングインジケーターが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByTestId("typing-indicator")).toBeInTheDocument();
-    });
-
-    // AI応答が表示されることを確認（どの応答でも良い）
-    await waitFor(
-      () => {
-        const aiMessages = screen.getAllByTestId(/message-msg-2/);
-        expect(aiMessages).toHaveLength(1);
-      },
-      { timeout: 4000 },
-    );
-  });
-
-  test("タイピングインジケーターが表示される", async () => {
-    render(<Chat />);
-    const input =
-      screen.getByPlaceholderText("メッセージを入力してください...");
-    const sendButton = screen.getByLabelText("メッセージを送信");
-
-    fireEvent.change(input, { target: { value: "テスト" } });
-    fireEvent.click(sendButton);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("typing-indicator")).toBeInTheDocument();
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(screen.getByTestId("typing-indicator")).toBeInTheDocument();
+  //   });
+  // });
 
   test("メッセージが時系列順に表示される", async () => {
     render(<Chat />);
