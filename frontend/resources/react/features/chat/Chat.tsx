@@ -3,18 +3,18 @@ import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import EmptyState from "./EmptyState";
 import TypingIndicator from "./TypingIndicator";
-import { Message } from "../../types/types";
+import type { ChatResponse, Message } from "../../types/types";
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageIdCounter = useRef(0);
+  // const messageIdCounter = useRef(0);
 
-  const generateId = () => {
-    messageIdCounter.current += 1;
-    return `msg-${messageIdCounter.current}`;
-  };
+  // const generateId = () => {
+  //   messageIdCounter.current += 1;
+  //   return `msg-${messageIdCounter.current}`;
+  // };
 
   const scrollToBottom = () => {
     if (
@@ -29,41 +29,56 @@ const Chat = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const simulateAIResponse = async (userMessage: string) => {
+  const sendMessageToAPI = async (userMessage: string) => {
     setIsTyping(true);
 
-    // シミュレートされたAI応答の遅延
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1500 + Math.random() * 1000),
-    );
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
 
-    // シンプルなAI応答生成
-    const responses = [
-      `ありがとうございます、「${userMessage}」について理解しました。`,
-      "それは興味深いご質問ですね。",
-      "もう少し詳しく教えていただけますか？",
-      "なるほど、そのような考えをお持ちなのですね。",
-      "参考になるお話をありがとうございます。",
-    ];
+      // if (!response.ok) {
+      //   throw new Error("Failed to get response from API");
+      // }
 
-    const aiResponse = responses[Math.floor(Math.random() * responses.length)];
+      const data: ChatResponse = await response.json();
 
-    const aiMessage: Message = {
-      id: generateId(),
-      content: aiResponse,
-      role: "assistant",
-      timestamp: new Date(),
-    };
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "ai",
+        content: data.documents.map((doc) => doc.content).join("\n\n"),
+        documents: data.documents,
+        timestamp: new Date(),
+      };
 
-    setMessages((prev) => [...prev, aiMessage]);
-    setIsTyping(false);
+      setMessages((prevState) => [...prevState, aiMessage]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+
+      // フォールバック応答
+      // const fallbackMessage: Message = {
+      //   id: (Date.now() + 1).toString(),
+      //   content:
+      //     "申し訳ございません。現在、応答できません。しばらく後でお試しください。",
+      //   role: "ai",
+      //   timestamp: new Date(),
+      // };
+
+      //   setMessages((prev) => [...prev, fallbackMessage]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
 
     const userMessage: Message = {
-      id: generateId(),
+      id: (Date.now() + 1).toString(),
       content: content.trim(),
       role: "user",
       timestamp: new Date(),
@@ -71,8 +86,8 @@ const Chat = () => {
 
     setMessages((prev) => [...prev, userMessage]);
 
-    // AI応答をシミュレート
-    await simulateAIResponse(content.trim());
+    // API経由でAI応答を取得
+    await sendMessageToAPI(content.trim());
   };
 
   return (
