@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
-import "@testing-library/jest-dom/vitest";
 import Chat from "../../features/chat/Chat";
+import "@testing-library/jest-dom/vitest";
 
 describe("Chat Component", () => {
   test("ユーザーがメッセージを入力して送信できる", () => {

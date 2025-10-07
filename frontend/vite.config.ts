@@ -10,7 +10,7 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: "./resources/react/setup.ts", // パスは適宜調整
   },
 });
