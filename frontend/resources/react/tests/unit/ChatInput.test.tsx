@@ -1,11 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { describe, test, expect, beforeEach, vi } from "vitest";
+import "@testing-library/jest-dom/vitest";
 import ChatInput from "../../features/chat/ChatInput";
 
-const mockOnSendMessage = jest.fn();
+const mockOnSendMessage = vi.fn();
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  mockOnSendMessage.mockClear();
 });
 
 describe("ChatInput Component 初期表示テスト", () => {
